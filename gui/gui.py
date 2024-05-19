@@ -22,21 +22,21 @@ class BoardWidget(tk.Frame):
                 square.bind("<Button-1>", lambda _, p=point: self.select(p))
 
     def select(self, point):
-        if self.selected_sqare is None:
-            piece = self.board[point]
-            if piece is None:
-                return
-
-            self.selected_sqare = piece.pos
-            self.possible_moves = piece.get_moves(self.board)
-        else:
+        moved = False
+        if self.selected_sqare is not None:
             try:
                 self.board.move(self.selected_sqare, point)
+                moved = True
             except InvalidMoveException:
                 pass
-
             self.selected_sqare = None
             self.possible_moves = []
+
+        if self.selected_sqare is None and not moved:
+            piece = self.board[point]
+            if piece is not None and piece.color == self.board.color_to_move:
+                self.selected_sqare = piece.pos
+                self.possible_moves = piece.get_moves(self.board)
 
         self.on_select.emit(point)
 
