@@ -16,7 +16,7 @@ class Point():
 
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        return isinstance(other, Point) and self.x == other.x and self.y == other.y
 
 
     def on_board(self):

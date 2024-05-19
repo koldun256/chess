@@ -21,7 +21,6 @@ class BreakCastlingMove(Move):
     def apply(self, board):
         king = board.get_king(self.piece.color)
         for side in self._sides:
-            print('breaking castilng color ' + str(self.piece.color))
             king.has_castling[side] = False
         self._base_move.apply(board)
 
@@ -57,7 +56,6 @@ class King(Piece):
 
     def can_castle(self, board, side):
         if not self.has_castling[side]:
-            print('broken castle')
             return False
 
         busy_offs = [Point(-1, 0), Point(-2, 0), Point(-3, 0)] \
@@ -66,7 +64,6 @@ class King(Piece):
 
         for d in busy_offs:
             if board[self.pos + d]:
-                print('busy sqare')
                 return False
 
         att_offs =  [Point(0, 0), Point(-1, 0), Point(-2, 0)] \
@@ -75,7 +72,6 @@ class King(Piece):
 
         for d in att_offs:
             if board.is_attacked(self.color, self.pos + d):
-                print('attacked sqare')
                 return False
 
         return True

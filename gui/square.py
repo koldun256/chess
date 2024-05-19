@@ -57,6 +57,9 @@ class Square(tk.Canvas):
             self.icon = load_image(piece)
             self.create_image((50, 50), image=self.icon)
 
+        if(self.pos == self.parent.selected_sqare):
+            self.create_rectangle(7, 7, 93, 93, outline=colors[opposite_color(self.color)], width=4, dash=(10, 10))
+
         move = next((move for move in self.parent.possible_moves if move.dest == self.pos), None)
 
         if move is None:
