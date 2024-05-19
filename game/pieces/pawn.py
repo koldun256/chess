@@ -1,8 +1,21 @@
 from game.piece import Piece
 from game.point import Point
 from game.color import Color
-from game.move import RegularMove, CaptureMove
+from game.move import RegularMove, CaptureMove, Move
+from game.pieces.queen import Queen
 
+class TransformMove(Move):
+    is_capture = False
+    def __init__(self, base_move):
+        self._piece = base_move.piece
+        self._dest = base_move.dest
+        self.is_capture = base_move.is_capture
+        self.base_move = base_move
+
+    def apply(self, board):
+        self.base_move.apply(board)
+        board.capture(self.dest)
+        board.add(Queen(self.dest, self.piece.color))
 
 class Pawn(Piece):
     _icon = '󰡙'
@@ -39,5 +52,8 @@ class Pawn(Piece):
 
                 moves.append(RegularMove(self, dest2))
 
-        return [move for move in moves + self.get_captures(board) \
+        return [TransformMove(move) \
+                if move.dest.y == 0 or move.dest.y == 7 \
+                else move \
+                for move in moves + self.get_captures(board) \
                 if not board.leads_to_check(move)]
