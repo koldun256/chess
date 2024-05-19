@@ -1,6 +1,7 @@
 import fen
 from engine import Engine
 from logger import Logger
+from gui.gui import gui_loop
 import asyncio
 
 
@@ -14,6 +15,7 @@ async def main():
     board.move('e7e5')
     print(await engine.best_move())
     print(board)
+    gui_loop()
 
 if __name__ == '__main__':
     asyncio.run(main())

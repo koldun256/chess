@@ -1,6 +1,9 @@
 import tkinter as tk
+from gui.square import Square
+from game.color import Color
+from game.point import Point
 
-class ChessGame:
+class Board:
     def __init__(self, root):
         self.root = root
         self.root.title("Chess Game")
@@ -9,11 +12,10 @@ class ChessGame:
     def create_board(self):
         for row in range(8):
             for col in range(8):
-                square_color = "white" if (row + col) % 2 == 0 else "black"
-                square = tk.Button(self.root, bg=square_color, width=5, height=2)
+                square = Square(self.root, Point(col, row))
                 square.grid(row=row, column=col)
 
-if __name__ == "__main__":
+def gui_loop():
     root = tk.Tk()
-    game = ChessGame(root)
+    game = Board(root)
     root.mainloop()
