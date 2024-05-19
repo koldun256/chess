@@ -4,7 +4,12 @@ from game.point import Point
 from game.color import Color, opposite_color
 from game.observable import Observable
 from game.pieces.king import King, CastleMove
+from enum import Enum
 
+class GameResult(Enum):
+    WHITE_WON = 1
+    BLACK_WON = 2
+    DRAW = 3
 
 class InvalidMoveException(Exception):
     pass
@@ -17,6 +22,10 @@ class Board():
     def __init__(self, pieces=None):
         self._pieces = pieces if pieces else set()
         self.on_move = Observable()
+        self.on_end = Observable()
+        self.on_move.connect(lambda p, o, d: self.toggle_color())
+        self.on_move.connect(lambda p, o, d: self.check_checkmate())
+        self.on_move.connect(lambda p, o, d: self.check_stalemate())
 
 
     def move(self, *args):
@@ -40,9 +49,19 @@ class Board():
             raise InvalidMoveException
 
         move.apply(self)
-        self._color_to_move = opposite_color(self.color_to_move)
         self.on_move.emit(piece, origin, piece.pos)
 
+    def check_checkmate(self):
+        if self.is_checkmate():
+            self.on_end.emit(   GameResult.BLACK_WON \
+                                if self.color_to_move == Color.WHITE \
+                                else GameResult.WHITE_WON)
+    def check_stalemate(self):
+        if self.is_stalemate():
+            self.on_end.emit(GameResult.DRAW)
+
+    def toggle_color(self):
+        self._color_to_move = opposite_color(self.color_to_move)
 
     def add(self, piece):
         if self[piece.pos] != None:
@@ -53,12 +72,6 @@ class Board():
 
     def capture(self, pos: Point) -> None:
         self._pieces = set(p for p in self.pieces if p.pos != pos)
-
-
-    def toggle_color(self):
-        self._color_to_move =   Color.BLACK \
-                                if self.color_to_move == Color.WHITE \
-                                else Color.WHITE
 
 
     def is_attacked(self, color, pos):
@@ -72,6 +85,21 @@ class Board():
 
         return False
 
+    def is_stalemate(self):
+        for piece in self.pieces:
+            if piece.color != self.color_to_move:
+                continue
+            for move in piece.get_moves(self):
+                return False
+        return not self.is_color_checked(self.color_to_move)
+
+    def is_checkmate(self):
+        for piece in self.pieces:
+            if piece.color != self.color_to_move:
+                continue
+            for move in piece.get_moves(self):
+                return False
+        return self.is_color_checked(self.color_to_move)
 
     def is_color_checked(self, color):
         return self.is_attacked(color, self.get_king(color).pos)
