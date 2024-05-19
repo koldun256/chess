@@ -20,11 +20,11 @@ class Rook(Piece):
             dest = self._pos + step
 
             while dest.on_board() and board[dest] is None:
-                moves.append(RegularMove(dest))
+                moves.append(RegularMove(self, dest))
                 dest += step
 
             if dest.on_board() and board[dest].color != self.color:
-                moves.append(CaptureMove(dest))
+                moves.append(CaptureMove(self, dest))
 
         return [BreakCastlingMove(move, (self._side)) \
                 for move in moves]

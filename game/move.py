@@ -25,7 +25,7 @@ class RegularMove(Move):
 
 
     def apply(self, board):
-        self.piece.pos = self.dest
+        board[self.piece.pos].pos = self.dest
 
 
 class CaptureMove(Move):
@@ -36,4 +36,4 @@ class CaptureMove(Move):
 
     def apply(self, board):
         board.capture(self.dest)
-        self.piece.pos = self.dest
+        board[self.piece.pos].pos = self.dest

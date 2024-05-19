@@ -15,10 +15,10 @@ class Queen(Piece):
             dest = self._pos + step
 
             while dest.on_board() and board[dest] is None:
-                moves.append(RegularMove(self,dest))
+                moves.append(RegularMove(self, dest))
                 dest += step
 
             if dest.on_board() and board[dest].color != self.color:
-                moves.append(CaptureMove(self.dest))
+                moves.append(CaptureMove(self, dest))
 
         return moves

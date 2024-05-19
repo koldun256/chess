@@ -2,6 +2,9 @@ import fen
 from engine import Engine
 from logger import Logger
 from gui.gui import gui_loop
+from game.pieces.queen import Queen
+from game.point import Point
+from copy import deepcopy
 import asyncio
 
 
@@ -19,3 +22,8 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+    q = Queen(Point(1, 1), 1)
+    q1 = deepcopy(q)
+    q1.pos = Point(2,2)
+    print(q.pos)
+

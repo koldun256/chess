@@ -39,10 +39,17 @@ bg = {
 
 class Square(tk.Canvas):
     def __init__(self, parent, pos, board):
-        color = Color.WHITE if (pos.x + pos.y) % 2 == 0 else Color.BLACK
-        tk.Canvas.__init__(self, parent, width=100, height=100, bg=bg[color])
+        self.board = board
+        self.pos = pos
+        color = bg[Color.WHITE if (pos.x + pos.y) % 2 == 0 else Color.BLACK]
+        tk.Canvas.__init__(self, parent, width=100, height=100, bg=color)
+        board.on_move.connect(lambda p, o, d: self.render())
+        self.render()
 
-        piece = board[pos]
+
+    def render(self):
+        self.delete('all')
+        piece = self.board[self.pos]
         if(piece is None):
             return
 

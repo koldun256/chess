@@ -19,9 +19,15 @@ class Board():
         self.on_move = Observable()
 
 
-    def move(self, _str):
-        origin = Point.from_str(_str[:2])
-        dest = Point.from_str(_str[2:])
+    def move(self, *args):
+        if len(args) == 1:
+            origin = Point.from_str(args[0][:2])
+            dest = Point.from_str(args[0][2:])
+        else:
+            origin = args[0]
+            dest = args[1]
+
+
         piece = self[origin]
 
         if piece is None or piece.color != self.color_to_move:
@@ -46,7 +52,7 @@ class Board():
 
 
     def capture(self, pos: Point) -> None:
-        self.pieces = set(p for p in self.pieces if p.pos != pos)
+        self._pieces = set(p for p in self.pieces if p.pos != pos)
 
 
     def toggle_color(self):
@@ -81,6 +87,7 @@ class Board():
     def leads_to_check(self, move):
         test_board = deepcopy(self)
         move.apply(test_board)
+        test_board[Point(0, 0)].pos = Point(0, 4)
         return test_board.is_color_checked(move.piece.color)
 
 
