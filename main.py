@@ -15,7 +15,7 @@ async def main():
     board.move('e7e5')
     print(await engine.best_move())
     print(board)
-    gui_loop()
+    gui_loop(board)
 
 if __name__ == '__main__':
     asyncio.run(main())

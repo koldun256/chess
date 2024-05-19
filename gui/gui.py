@@ -4,18 +4,18 @@ from game.color import Color
 from game.point import Point
 
 class Board:
-    def __init__(self, root):
+    def __init__(self, root, board):
         self.root = root
         self.root.title("Chess Game")
-        self.create_board()
+        self.create_board(board)
 
-    def create_board(self):
+    def create_board(self, board):
         for row in range(8):
             for col in range(8):
-                square = Square(self.root, Point(col, row))
-                square.grid(row=row, column=col)
+                square = Square(self.root, Point(col, row), board)
+                square.grid(row=7-row, column=col)
 
-def gui_loop():
+def gui_loop(board):
     root = tk.Tk()
-    game = Board(root)
+    game = Board(root, board)
     root.mainloop()
