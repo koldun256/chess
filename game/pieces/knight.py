@@ -16,7 +16,7 @@ class Knight(Piece):
                 continue
 
             if board[dest].color != self.color:
-                moves.append(CaptureMove(self, dest))
+                captures.append(CaptureMove(self, dest))
 
         return captures
 
@@ -33,4 +33,6 @@ class Knight(Piece):
                 moves.append(RegularMove(self, dest))
                 continue
 
-        return moves + self.get_captures(board)
+        return [move for move in moves + self.get_captures(board) \
+                if not board.leads_to_check(move)]
+

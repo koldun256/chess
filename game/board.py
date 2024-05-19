@@ -87,7 +87,6 @@ class Board():
     def leads_to_check(self, move):
         test_board = deepcopy(self)
         move.apply(test_board)
-        test_board[Point(0, 0)].pos = Point(0, 4)
         return test_board.is_color_checked(move.piece.color)
 
 

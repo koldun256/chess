@@ -19,6 +19,7 @@ class Move(ABC):
 
 
 class RegularMove(Move):
+    is_capture = False
     def __init__(self, piece, dest):
         self._piece = piece
         self._dest = dest
@@ -29,6 +30,7 @@ class RegularMove(Move):
 
 
 class CaptureMove(Move):
+    is_capture = True
     def __init__(self, piece, dest):
         self._piece = piece
         self._dest = dest

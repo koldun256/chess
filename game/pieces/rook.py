@@ -6,6 +6,7 @@ from game.pieces.king import BreakCastlingMove, Side
 
 class Rook(Piece):
     _icon = '󰡛'
+    _code = 4
 
 
     def __init__(self, pos, color):
@@ -36,5 +37,6 @@ class Rook(Piece):
                 moves.append(RegularMove(self, dest))
                 dest += step
 
-        return [BreakCastlingMove(move, (self._side)) \
-                for move in moves + self.get_captures(board)]
+        return [BreakCastlingMove(move, (self._side, )) \
+                for move in moves + self.get_captures(board) \
+                if not board.leads_to_check(move)]

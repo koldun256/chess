@@ -65,7 +65,7 @@ class Square(tk.Canvas):
         if move is None:
             return
 
-        if isinstance(move, CaptureMove):
+        if move.is_capture:
             self.create_rectangle(7, 7, 93, 93, outline=colors[opposite_color(self.color)], width=7)
         else:
             self.create_rectangle(45, 45, 55, 55, fill=colors[opposite_color(self.color)])

@@ -16,6 +16,7 @@ class BreakCastlingMove(Move):
         self._dest = base_move.dest
         self._piece = base_move.piece
         self._sides = sides
+        self.is_capture = base_move.is_capture
 
 
     def apply(self, board):
@@ -26,6 +27,7 @@ class BreakCastlingMove(Move):
 
 
 class CastleMove(Move):
+    is_capture = False
     def __init__(self, piece, side):
         self._piece = piece
         self._side = side
@@ -45,7 +47,7 @@ class CastleMove(Move):
 
 class King(Piece):
     _icon = '󰡗'
-    _code = 4
+    _code = 6
     def __init__(self, pos, color):
         super().__init__(pos, color)
         self.has_castling = {
@@ -86,7 +88,7 @@ class King(Piece):
                 continue
 
             if board[dest] != None and board[dest].color != self.color:
-                moves.append(CaptureMove(self, dest))
+                captures.append(CaptureMove(self, dest))
 
         return captures
 
@@ -112,4 +114,4 @@ class King(Piece):
             moves.append(CastleMove(self, Side.KING_SIDE))
 
         return [BreakCastlingMove(move, (Side.KING_SIDE, Side.QUEEN_SIDE))\
-                for move in moves]
+                for move in moves if not board.leads_to_check(move)]
