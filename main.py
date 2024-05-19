@@ -14,10 +14,7 @@ async def main():
     engine = Engine(board, start_fen)
     logger = Logger(board, start_fen)
 
-    board.move('e2e4')
-    board.move('e7e5')
     print(await engine.best_move())
-    print(board)
     gui_loop(board)
 
 if __name__ == '__main__':

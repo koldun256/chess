@@ -3,33 +3,46 @@ from gui.square import Square
 from game.color import Color
 from game.point import Point
 from game.board import InvalidMoveException
+from game.observable import Observable
 
-class Board:
-    selected = None
-    def __init__(self, root, board):
-        self.root = root
-        self.root.title("Chess Game")
-        self.create_board(board)
+class BoardWidget(tk.Frame):
+    selected_sqare = None
+    possible_moves = []
+    
+    def __init__(self, parent, board):
+        tk.Frame.__init__(self, parent)
         self.board = board
+        self.on_select = Observable()
 
-    def create_board(self, board):
         for row in range(8):
             for col in range(8):
                 point = Point(col, row)
-                square = Square(self.root, point, board)
+                square = Square(self, point, board)
                 square.grid(row=7-row, column=col)
                 square.bind("<Button-1>", lambda _, p=point: self.select(p))
 
     def select(self, point):
-        if self.selected is None:
-            self.selected = point
-            return
-        try:
-            self.board.move(self.selected, point)
-            self.selected = None
-        except InvalidMoveException:
-            print('invalid move!')
+        if self.selected_sqare is None:
+            piece = self.board[point]
+            if piece is None:
+                return
+
+            self.selected_sqare = piece.pos
+            self.possible_moves = piece.get_moves(self.board)
+        else:
+            try:
+                self.board.move(self.selected_sqare, point)
+            except InvalidMoveException:
+                pass
+
+            self.selected_sqare = None
+            self.possible_moves = []
+
+        self.on_select.emit(point)
+
 def gui_loop(board):
     root = tk.Tk()
-    game = Board(root, board)
+    root.title("Chess")
+    board_widget = BoardWidget(root, board)
+    board_widget.pack()
     root.mainloop()

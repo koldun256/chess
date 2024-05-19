@@ -21,7 +21,7 @@ class Pawn(Piece):
 
                 captures.append(CaptureMove(self, dest))
 
-        return captures
+        return moves
 
     def get_moves(self, board):
         moves = []
@@ -39,4 +39,13 @@ class Pawn(Piece):
 
                 moves.append(RegularMove(self, dest2))
 
-        return moves + self.get_captures(board)
+        for dest in self.pos + step + Point(1, 0), \
+                    self.pos + step + Point(-1, 0):
+
+            if  dest.on_board() and \
+                board[dest] is not None and \
+                board[dest].color != self.color:
+
+                moves.append(CaptureMove(self, dest))
+
+        return moves

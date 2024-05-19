@@ -3,7 +3,7 @@ from copy import deepcopy
 from game.point import Point
 from game.color import Color, opposite_color
 from game.observable import Observable
-from game.pieces.king import King
+from game.pieces.king import King, CastleMove
 
 
 class InvalidMoveException(Exception):
@@ -66,7 +66,7 @@ class Board():
             if p.color == color:
                 continue
             
-            for move in p.get_moves(self):
+            for move in p.get_captures(self):
                 if pos == move.dest:
                     return True
 

@@ -21,6 +21,7 @@ class BreakCastlingMove(Move):
     def apply(self, board):
         king = board.get_king(self.piece.color)
         for side in self._sides:
+            print('breaking castilng color ' + str(self.piece.color))
             king.has_castling[side] = False
         self._base_move.apply(board)
 
@@ -37,22 +38,26 @@ class CastleMove(Move):
         rook = board[Point( 0 if self._side == Side.QUEEN_SIDE else 7,
                             self.piece.pos.y)]
 
-        rook.pos = Point(   3 if self.side == Side.QUEEN_SIDE else 5, \
+        rook.pos = Point(   3 if self._side == Side.QUEEN_SIDE else 5, \
                             self.piece.pos.y)
 
-        self.piece.pos = self.dest
+        board[self.piece.pos].pos = self.dest
 
 
 class King(Piece):
     _icon = '󰡗'
     _code = 4
-    has_castling = {
-        Side.KING_SIDE: True,
-        Side.QUEEN_SIDE: True
-    }
+    def __init__(self, pos, color):
+        super().__init__(pos, color)
+        self.has_castling = {
+            Side.KING_SIDE: True,
+            Side.QUEEN_SIDE: True
+        }
+
 
     def can_castle(self, board, side):
         if not self.has_castling[side]:
+            print('broken castle')
             return False
 
         busy_offs = [Point(-1, 0), Point(-2, 0), Point(-3, 0)] \
@@ -61,6 +66,7 @@ class King(Piece):
 
         for d in busy_offs:
             if board[self.pos + d]:
+                print('busy sqare')
                 return False
 
         att_offs =  [Point(0, 0), Point(-1, 0), Point(-2, 0)] \
@@ -69,10 +75,24 @@ class King(Piece):
 
         for d in att_offs:
             if board.is_attacked(self.color, self.pos + d):
+                print('attacked sqare')
                 return False
 
         return True
 
+    def get_captures(self, board):
+        captures = []
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1),\
+                       (1, 1), (1, -1), (-1, 1), (-1, -1)]:
+
+            dest = self._pos + Point(dx, dy)
+            if not dest.on_board():
+                continue
+
+            if board[dest] != None and board[dest].color != self.color:
+                moves.append(CaptureMove(self, dest))
+
+        return captures
 
     def get_moves(self, board):
         moves = []
@@ -87,14 +107,13 @@ class King(Piece):
                 moves.append(RegularMove(self, dest))
                 continue
 
-            if board[dest].color != self.color:
-                moves.append(CaptureMove(self, dest))
+        moves += self.get_captures(board)
 
         if self.can_castle(board, Side.QUEEN_SIDE):
-            moves.append(CastleMove(self, QUEEN_SIDE))
+            moves.append(CastleMove(self, Side.QUEEN_SIDE))
 
         if self.can_castle(board, Side.KING_SIDE):
-            moves.append(CastleMove(self, KING_SIDE))
+            moves.append(CastleMove(self, Side.KING_SIDE))
 
         return [BreakCastlingMove(move, (Side.KING_SIDE, Side.QUEEN_SIDE))\
                 for move in moves]

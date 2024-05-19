@@ -1,5 +1,6 @@
 class Observable:
-    callbacks = []
+    def __init__(self):
+        self.callbacks = []
 
     def connect(self, callback):
         self.callbacks.append(callback)

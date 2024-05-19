@@ -40,6 +40,3 @@ class Piece(ABC):
     def __repr__(self):
         c = 'w' if self.color == Color.WHITE else 'b'
         return f'{c}{self.icon}{self.pos}'
-
-    def __deepcopy__(self, a):
-        return self.__class__(self.pos, self.color)
