@@ -9,6 +9,8 @@ from game.pieces.bishop import Bishop
 from game.pieces.knight import Knight
 from game.pieces.queen import Queen
 
+default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+
 notation = {
     'r': Rook,
     'n': Knight,
@@ -18,7 +20,7 @@ notation = {
     'b': Bishop
 }
 
-def build(fen):
+def build(fen=default_fen):
     piece_data = fen.split(' ')[0]
     rows = reversed(piece_data.split('/'))
     board = Board()

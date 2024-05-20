@@ -29,7 +29,7 @@ def load_image(piece):
     for piece_class, name in piece_names.items():
         if isinstance(piece, piece_class):
             piece_name = name
-    img = Image.open(f"gui/img/{color_name}_{piece_name}.png")
+    img = Image.open(f"img/{color_name}_{piece_name}.png")
     new_size = (img.size[0] * 4, img.size[1] * 4)
     return ImageTk.PhotoImage(img.resize(new_size, resample=Image.NEAREST))
 
@@ -50,7 +50,10 @@ class Square(tk.Canvas):
 
 
     def render(self):
-        self.delete('all')
+        try:
+            self.delete('all')
+        except:
+            return
         piece = self.board[self.pos]
 
         if(piece is not None):
