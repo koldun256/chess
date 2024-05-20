@@ -11,5 +11,6 @@ class GameState(AppState):
         self.board = board
 
 class ResultState(AppState):
-    def __init__(self, result):
+    def __init__(self, result, board):
         self.result = result
+        self.board = board

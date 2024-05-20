@@ -18,6 +18,8 @@ class InvalidMoveException(Exception):
 class Board():
     _pieces = set()
     _color_to_move = Color.WHITE
+    finished = False
+    result = None
 
     def __init__(self, pieces=None):
         self._pieces = pieces if pieces else set()
@@ -26,9 +28,14 @@ class Board():
         self.on_move.connect(lambda move: self.toggle_color())
         self.on_move.connect(lambda move: self.check_checkmate())
         self.on_move.connect(lambda move: self.check_stalemate())
+        self.on_end.connect(self.set_finished)
 
 
     def move(self, *args):
+        if self.finished:
+            print('после драки кулаками не машут')
+            return
+
         if len(args) == 1:
             origin = Point.from_str(args[0][:2])
             dest = Point.from_str(args[0][2:])
@@ -50,6 +57,10 @@ class Board():
 
         move.apply(self)
         self.on_move.emit(move)
+
+    def set_finished(self, result):
+        self.finished = True
+        self.result = result
 
     def check_checkmate(self):
         if self.is_checkmate():

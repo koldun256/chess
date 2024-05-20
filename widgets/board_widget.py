@@ -13,6 +13,7 @@ class BoardWidget(tk.Frame):
     def __init__(self, parent, board):
         tk.Frame.__init__(self, parent, highlightthickness=0)
         self.board = board
+        active = not board.finished
         self.on_select = Observable()
 
         for row in range(8):
@@ -20,7 +21,8 @@ class BoardWidget(tk.Frame):
                 point = Point(col, row)
                 square = Square(self, point, board)
                 square.grid(row=7-row, column=col)
-                square.bind("<Button-1>", lambda _, p=point: self.select(p))
+                if active:
+                    square.bind("<Button-1>", lambda _, p=point: self.select(p))
 
     def select(self, point):
         moved = False

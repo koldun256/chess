@@ -1,5 +1,4 @@
 import tkinter as tk
-from widgets.result_activity import ResultActivity
 from widgets.game_activity import GameActivity
 from widgets.menu_activity import MenuActivity
 from app_state import MenuState, GameState, ResultState
@@ -27,7 +26,7 @@ class App(tk.Tk):
             self.activity = GameActivity(self, self.state.board)
 
         if isinstance(self.state, ResultState):
-            self.activity = ResultActivity(self, self.state.result)
+            self.activity = GameActivity(self, self.state.board)
 
         self.activity.pack()
         self.activity.place(relx=.5, rely=.5, anchor=tk.CENTER)

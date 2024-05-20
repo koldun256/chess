@@ -6,5 +6,5 @@ class Observable:
         self.callbacks.append(callback)
 
     def emit(self, *args, **kwargs):
-        for callback in self.callbacks:
+        for callback in [*self.callbacks]:
             callback(*args, **kwargs)

@@ -7,6 +7,7 @@ from game.color import Color
 class GameActivity(tk.Frame):
     def __init__(self, app, board):
         super().__init__(app)
+        # print('game activity')
         self.board = board
         top_bar = TopBar(self, board, app)
         top_bar.pack()
@@ -14,5 +15,5 @@ class GameActivity(tk.Frame):
         board_widget = BoardWidget(self, board)
         board_widget.pack()
         board.on_end.connect(lambda r: \
-                app.set_state(ResultState(r)))
+                app.set_state(ResultState(r, board)))
 
