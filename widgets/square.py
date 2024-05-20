@@ -33,18 +33,13 @@ def load_image(piece):
     new_size = (img.size[0] * 4, img.size[1] * 4)
     return ImageTk.PhotoImage(img.resize(new_size, resample=Image.NEAREST))
 
-colors = {
-    Color.WHITE: "#d7dbc0",
-    Color.BLACK: "#2a302a"
-}
-
 class Square(tk.Canvas):
     def __init__(self, parent, pos, board):
         self.board = board
         self.pos = pos
         self.parent = parent
         self.color = Color.WHITE if (pos.x + pos.y) % 2 == 0 else Color.BLACK
-        tk.Canvas.__init__(self, parent, width=100, height=100, bg=colors[self.color])
+        super().__init__(parent, width=100, height=100, bg=self.color.value, highlightthickness=0)
         parent.on_select.connect(lambda p: self.render())
         self.render()
 
@@ -61,7 +56,7 @@ class Square(tk.Canvas):
             self.create_image((50, 50), image=self.icon)
 
         if(self.pos == self.parent.selected_sqare):
-            self.create_rectangle(7, 7, 93, 93, outline=colors[opposite_color(self.color)], width=4, dash=(10, 10))
+            self.create_rectangle(7, 7, 93, 93, outline=opposite_color(self.color).value, width=4, dash=(10, 10))
 
         move = next((move for move in self.parent.possible_moves if move.dest == self.pos), None)
 
@@ -69,7 +64,7 @@ class Square(tk.Canvas):
             return
 
         if move.is_capture:
-            self.create_rectangle(7, 7, 93, 93, outline=colors[opposite_color(self.color)], width=7)
+            self.create_rectangle(7, 7, 93, 93, outline=opposite_color(self.color).value, width=7)
         else:
-            self.create_rectangle(45, 45, 55, 55, fill=colors[opposite_color(self.color)])
+            self.create_rectangle(45, 45, 55, 55, fill=opposite_color(self.color).value)
 

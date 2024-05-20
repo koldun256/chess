@@ -1,9 +1,8 @@
 from enum import Enum
 
-
 class Color(Enum):
-    WHITE = 1
-    BLACK = 2
+    WHITE = "#d7dbc0"
+    BLACK = "#2a302a"
 
 
 def opposite_color(color):

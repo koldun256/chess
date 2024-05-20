@@ -3,7 +3,7 @@ from widgets.square import Square
 from game.color import Color
 from game.point import Point
 from game.board import InvalidMoveException
-from game.observable import Observable
+from observable import Observable
 
 
 class BoardWidget(tk.Frame):
@@ -11,7 +11,7 @@ class BoardWidget(tk.Frame):
     possible_moves = []
     
     def __init__(self, parent, board):
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, highlightthickness=0)
         self.board = board
         self.on_select = Observable()
 

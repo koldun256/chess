@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from game.point import Point
 from game.color import Color, opposite_color
-from game.observable import Observable
+from observable import Observable
 from game.pieces.king import King, CastleMove
 from enum import Enum
 
@@ -23,9 +23,9 @@ class Board():
         self._pieces = pieces if pieces else set()
         self.on_move = Observable()
         self.on_end = Observable()
-        self.on_move.connect(lambda p, o, d: self.toggle_color())
-        self.on_move.connect(lambda p, o, d: self.check_checkmate())
-        self.on_move.connect(lambda p, o, d: self.check_stalemate())
+        self.on_move.connect(lambda move: self.toggle_color())
+        self.on_move.connect(lambda move: self.check_checkmate())
+        self.on_move.connect(lambda move: self.check_stalemate())
 
 
     def move(self, *args):
@@ -49,7 +49,7 @@ class Board():
             raise InvalidMoveException
 
         move.apply(self)
-        self.on_move.emit(piece, origin, piece.pos)
+        self.on_move.emit(move)
 
     def check_checkmate(self):
         if self.is_checkmate():

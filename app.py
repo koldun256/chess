@@ -9,7 +9,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Chess")
-        self.geometry('850x850')
+        self.geometry('800x850')
         self.set_state(MenuState())
 
     def set_state(self, state):
@@ -25,11 +25,12 @@ class App(tk.Tk):
 
         if isinstance(self.state, GameState):
             self.activity = GameActivity(self, self.state.board)
+
         if isinstance(self.state, ResultState):
             self.activity = ResultActivity(self, self.state.result)
 
         self.activity.pack()
-        self.activity.place(relx = 0.5, rely = 0.5, anchor = tk.CENTER)
+        self.activity.place(relx=.5, rely=.5, anchor=tk.CENTER)
 
 
 if __name__ == '__main__':
