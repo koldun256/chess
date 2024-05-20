@@ -17,7 +17,7 @@ class InvalidMoveException(Exception):
 
 class Board():
     _pieces = set()
-    _color_to_move = Color.WHITE
+    color_to_move = Color.WHITE
     finished = False
     result = None
     en_passant = None
@@ -74,7 +74,7 @@ class Board():
             self.on_end.emit(GameResult.DRAW)
 
     def toggle_color(self):
-        self._color_to_move = opposite_color(self.color_to_move)
+        self.color_to_move = opposite_color(self.color_to_move)
 
     def add(self, piece):
         if self[piece.pos] != None:
@@ -129,11 +129,6 @@ class Board():
         test_board = deepcopy(self)
         move.apply(test_board)
         return test_board.is_color_checked(move.piece.color)
-
-
-    @property
-    def color_to_move(self):
-        return self._color_to_move
 
     
     @property
