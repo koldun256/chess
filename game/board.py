@@ -20,6 +20,7 @@ class Board():
     _color_to_move = Color.WHITE
     finished = False
     result = None
+    en_passant = None
 
     def __init__(self, pieces=None):
         self._pieces = pieces if pieces else set()
@@ -54,7 +55,8 @@ class Board():
 
         if move is None or self.leads_to_check(move):
             raise InvalidMoveException
-
+        
+        self.en_passant = None
         move.apply(self)
         self.on_move.emit(move)
 

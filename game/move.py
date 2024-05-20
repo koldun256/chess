@@ -17,6 +17,10 @@ class Move(ABC):
     def dest(self) -> Point:
         return self._dest
 
+    @property
+    def color(self):
+        return self.piece.color
+
 
 class RegularMove(Move):
     is_capture = False

@@ -4,6 +4,17 @@ from game.color import Color
 from game.move import RegularMove, CaptureMove, Move
 from game.pieces.queen import Queen
 
+class EnPassantMove(Move):
+    is_capture = True
+    def __init__(self, piece, dest):
+        self._piece = piece
+        self._dest = dest
+
+    def apply(self, board):
+        board.capture(Point(self.dest.x, self.dest.y + \
+                (1 if self.color == Color.BLACK else -1)))
+        board[self.piece.pos].pos = self.dest
+
 class TransformMove(Move):
     is_capture = False
     def __init__(self, base_move):
@@ -16,6 +27,12 @@ class TransformMove(Move):
         self.base_move.apply(board)
         board.capture(self.dest)
         board.add(Queen(self.dest, self.piece.color))
+
+class JumpMove(RegularMove):
+    def apply(self, board):
+        super().apply(board)
+        board.en_passant = self.dest + Point(0, \
+                -1 if self.color == Color.WHITE else 1)
 
 class Pawn(Piece):
     _icon = '󰡙'
@@ -34,6 +51,9 @@ class Pawn(Piece):
 
                 captures.append(CaptureMove(self, dest))
 
+            if dest == board.en_passant:
+                captures.append(EnPassantMove(self, dest))
+
         return captures
 
     def get_moves(self, board):
@@ -50,7 +70,7 @@ class Pawn(Piece):
                 dest2.on_board() and \
                 board[dest2] is None:
 
-                moves.append(RegularMove(self, dest2))
+                moves.append(JumpMove(self, dest2))
 
         return [TransformMove(move) \
                 if move.dest.y == 0 or move.dest.y == 7 \
