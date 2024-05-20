@@ -2,7 +2,7 @@ import tkinter as tk
 from widgets.square import Square
 from game.color import Color
 from game.point import Point
-from game.board import InvalidMoveException
+from game.board import InvalidMoveException, GameStatus
 from observable import Observable
 
 
@@ -13,7 +13,6 @@ class BoardWidget(tk.Frame):
     def __init__(self, parent, board):
         tk.Frame.__init__(self, parent, highlightthickness=0)
         self.board = board
-        active = not board.finished
         self.on_select = Observable()
 
         for row in range(8):
@@ -21,7 +20,8 @@ class BoardWidget(tk.Frame):
                 point = Point(col, row)
                 square = Square(self, point, board)
                 square.grid(row=7-row, column=col)
-                if active:
+
+                if board.status == GameStatus.ONGOING:
                     square.bind("<Button-1>", lambda _, p=point: self.select(p))
 
     def select(self, point):

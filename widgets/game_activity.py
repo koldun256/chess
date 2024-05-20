@@ -3,17 +3,17 @@ from widgets.board_widget import BoardWidget
 from widgets.top_bar import TopBar
 from app_state import ResultState
 from game.color import Color
+from games_db import GamesDB
 
 class GameActivity(tk.Frame):
     def __init__(self, app, board):
         super().__init__(app)
-        # print('game activity')
         self.board = board
         top_bar = TopBar(self, board, app)
         top_bar.pack()
 
         board_widget = BoardWidget(self, board)
         board_widget.pack()
-        board.on_end.connect(lambda r: \
-                app.set_state(ResultState(r, board)))
+        board.on_end.connect(lambda: \
+                app.set_state(ResultState(board)))
 

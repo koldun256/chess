@@ -1,13 +1,13 @@
 import tkinter as tk
 from game.color import Color, opposite_color
-from game.board import GameResult
+from game.board import GameStatus
 from app_state import MenuState
 from widgets.button import Button
 
 result_text = {
-    GameResult.WHITE_WON: "WHITE WON",
-    GameResult.BLACK_WON: "BLACK WON",
-    GameResult.DRAW: "DRAW",
+    GameStatus.WHITE_WON: "WHITE WON",
+    GameStatus.BLACK_WON: "BLACK WON",
+    GameStatus.DRAW: "DRAW",
 }
 
 class TopBar(tk.Frame):
@@ -16,12 +16,6 @@ class TopBar(tk.Frame):
         super().__init__(parent, height=50, width=850)
         self.board = board
         self.pack_propagate(0)
-
-        if board.finished:
-            self.label = tk.Label(self, text=result_text[board.result], font=("ProggyClean Nerd Font", 20))
-            self.label.pack()
-            self.label.place(relx=.5, rely=.5, anchor=tk.CENTER)
-
 
         board.on_move.connect(lambda move: self.set_color(board.color_to_move))
         self.columnconfigure(0, weight=1)
@@ -34,8 +28,8 @@ class TopBar(tk.Frame):
         self.home_btn.pack()
         self.home_btn.place(x=75, rely=.5, anchor=tk.CENTER)
 
-        if board.finished:
-            self.label = tk.Label(self, text=result_text[board.result], font=("ProggyClean Nerd Font", 20))
+        if board.status != GameStatus.ONGOING:
+            self.label = tk.Label(self, text=result_text[board.status], font=("ProggyClean Nerd Font", 20))
             self.label.pack()
             self.label.place(relx=.5, rely=.5, anchor=tk.CENTER)
             self.set_color(opposite_color(board.color_to_move))

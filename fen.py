@@ -1,5 +1,5 @@
 from game.piece import Color
-from game.board import Board
+from game.board import Board, GameStatus
 from game.point import Point
 
 from game.pieces.rook import Rook
@@ -9,7 +9,7 @@ from game.pieces.bishop import Bishop
 from game.pieces.knight import Knight
 from game.pieces.queen import Queen
 
-default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1'
 
 notation = {
     'r': Rook,
@@ -21,7 +21,7 @@ notation = {
 }
 
 def build(fen=default_fen):
-    piece_data, color, castling, en_passant, _, __ = fen.split(' ')
+    piece_data, color, castling, en_passant, status = fen.split(' ')
     rows = reversed(piece_data.split('/'))
     board = Board()
     board.color_to_move = Color.WHITE if color == 'w' else Color.BLACK
@@ -48,7 +48,7 @@ def build(fen=default_fen):
     board.get_king(Color.BLACK).has_castling[Side.QUEEN_SIDE] = 'q' in castling
     board.get_king(Color.BLACK).has_castling[Side.KING_SIDE] = 'k' in castling
 
-    print(to_fen(board))
+    board.status = GameStatus(int(status))
 
     return board
 
@@ -96,4 +96,4 @@ def to_fen(board):
 
     en_passant = '-' if board.en_passant is None else str(board.en_passant)
 
-    return f"{piece_data} {color} {castling} {en_passant} 0 1"
+    return f"{piece_data} {color} {castling} {en_passant} {board.status.value}"

@@ -6,10 +6,12 @@ from observable import Observable
 from game.pieces.king import King, CastleMove
 from enum import Enum
 
-class GameResult(Enum):
-    WHITE_WON = 1
-    BLACK_WON = 2
-    DRAW = 3
+class GameStatus(Enum):
+    ONGOING = 1
+    WHITE_WON = 2
+    BLACK_WON = 3
+    DRAW = 4
+
 
 class InvalidMoveException(Exception):
     pass
@@ -18,8 +20,7 @@ class InvalidMoveException(Exception):
 class Board():
     _pieces = set()
     color_to_move = Color.WHITE
-    finished = False
-    result = None
+    status = GameStatus.ONGOING
     en_passant = None
 
     def __init__(self, pieces=None):
@@ -29,11 +30,9 @@ class Board():
         self.on_move.connect(lambda move: self.toggle_color())
         self.on_move.connect(lambda move: self.check_checkmate())
         self.on_move.connect(lambda move: self.check_stalemate())
-        self.on_end.connect(self.set_finished)
-
 
     def move(self, *args):
-        if self.finished:
+        if self.status != GameStatus.ONGOING:
             print('после драки кулаками не машут')
             return
 
@@ -60,18 +59,17 @@ class Board():
         move.apply(self)
         self.on_move.emit(move)
 
-    def set_finished(self, result):
-        self.finished = True
-        self.result = result
-
     def check_checkmate(self):
         if self.is_checkmate():
-            self.on_end.emit(   GameResult.BLACK_WON \
-                                if self.color_to_move == Color.WHITE \
-                                else GameResult.WHITE_WON)
+            self.status = GameStatus.BLACK_WON \
+                        if self.color_to_move == Color.WHITE \
+                        else GameStatus.WHITE_WON
+            self.on_end.emit()
+
     def check_stalemate(self):
         if self.is_stalemate():
-            self.on_end.emit(GameResult.DRAW)
+            self.status = GameStatus.DRAW
+            self.on_end.emit()
 
     def toggle_color(self):
         self.color_to_move = opposite_color(self.color_to_move)
